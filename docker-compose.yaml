@@ -15,7 +15,7 @@ services:
       - MINIO_ROOT_USER=admin  # Имя пользователя для входа
       - MINIO_ROOT_PASSWORD=yourpassword  # Пароль для входа
     ports:
-      - "9002:9002"  # Порт для S3 API
+      - "9000:9000"  # Порт для S3 API
       - "9001:9001"  # Порт для панели управления MinIO (Console)
     command: server /data --console-address ":9001"
 

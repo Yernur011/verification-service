@@ -1,3 +1,16 @@
 spring:
   application:
     name: verivication-dipllom
+
+
+
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 10000
+        loggerLevel: basic
+        requestInterceptors:
+          - com.diploma.verivicationdipllom.config.feign.ClientConfiguration
