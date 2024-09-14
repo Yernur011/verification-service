@@ -8,6 +8,7 @@ services:
       - ELASTIC_PASSWORD=yourpassword # Пароль для суперпользователя "elastic"
     ports:
       - "9200:9200"
+    restart: always
   minio:
     image: minio/minio:latest
     container_name: minio
@@ -18,7 +19,7 @@ services:
       - "9000:9000"  # Порт для S3 API
       - "9001:9001"  # Порт для панели управления MinIO (Console)
     command: server /data --console-address ":9001"
-
+    restart: always
 #  postgres:
 #    image: postgres:15
 #    container_name: postgres
