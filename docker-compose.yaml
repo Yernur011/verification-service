@@ -3,12 +3,14 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
     container_name: elasticsearch-verification
     environment:
+      - xpack.security.enabled=false
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - ELASTIC_PASSWORD=yourpassword # Пароль для суперпользователя "elastic"
     ports:
       - "9200:9200"
     restart: always
+
   minio:
     image: minio/minio:latest
     container_name: minio
@@ -20,15 +22,22 @@ services:
       - "9001:9001"  # Порт для панели управления MinIO (Console)
     command: server /data --console-address ":9001"
     restart: always
-#  postgres:
-#    image: postgres:15
-#    container_name: postgres
-#    ports:
-#      - '5435:5432'
-#    environment:
-#      POSTGRES_PASSWORD: "user"
-#      POSTGRES_USER: "user"
-#      POSTGRES_DB: "j-sso"
-#    restart: always
-#    volumes:
-#      - ./docker/postgres/data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Ваш Dockerfile для Java-приложения
+    container_name: java-app
+    environment:
+      - ELASTIC_HOST=elasticsearch
+      - ELASTIC_PORT=9200
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=yourpassword
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=yourpassword
+    ports:
+      - "8081:8081" # Открываем порт для доступа к вашему приложению
+    depends_on:
+      - elasticsearch
+      - minio
+    restart: always
